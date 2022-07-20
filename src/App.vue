@@ -1,26 +1,57 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <div v-for="data in tradeDataList" :key="data.id">
+      <div>
+        {{ data }}
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+  export default {
+    name: 'App',
+    data: () => {
+      return {
+        wss: null,
+        tradeDataList: [],
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
+      }
+    },
+
+    created() {
+      this.getTradeStream();
+    },
+
+    methods: {
+      getTradeStream() {
+        //const APIKEY = process.env.POLY_API_KEY || 'AAQ2DvB3pxOkFP83b79S4nDUH79FygWq';
+        //const API_KEY = '62d863e2196486.53091730';
+        console.log("Starting wss to binance Server");
+
+        this.wss = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@trade");
+
+        this.wss.addEventListener("message", (event) => {
+
+          let tradeDataString = event.data;
+            this.tradeDataList = [];
+
+            let parsedData = JSON.parse(tradeDataString);
+            this.tradeDataList = parsedData;
+
+          console.log(this.tradeDataList);
+        });
+
+        this.wss.onopen = function (event) {
+          //let json = "{\"type\": \"subscribe\",    \"product_ids\": [\"BTC-USD\"]}";
+          console.log(event);
+          //this.wss.send(json);
+          console.log("ICEx market datasını çekiyor");
+          //this.wss.send(JSON.stringify({"action":"auth","params":APIKEY}))
+          //this.wss.send(JSON.stringify({"action":"subscribe","params":"C.AUD/USD,C.USD/EUR,C.USD/JPY"}))
+        };
+
+      }
+    }
   }
-}
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
