@@ -25,8 +25,6 @@
 
     methods: {
       getTradeStream() {
-        //const APIKEY = process.env.POLY_API_KEY || 'AAQ2DvB3pxOkFP83b79S4nDUH79FygWq';
-        //const API_KEY = '62d863e2196486.53091730';
         console.log("Starting wss to binance Server");
 
         this.wss = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@trade");
